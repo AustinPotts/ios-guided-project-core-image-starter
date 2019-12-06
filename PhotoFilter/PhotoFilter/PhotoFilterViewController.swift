@@ -2,6 +2,7 @@ import UIKit
 import CoreImage
 import Photos
 
+
 class PhotoFilterViewController: UIViewController {
     
     //Properties
@@ -69,8 +70,46 @@ class PhotoFilterViewController: UIViewController {
 	@IBAction func savePhotoButtonPressed(_ sender: UIButton) {
 
 		// TODO: Save to photo library
+        savePhoto()
 	}
 	
+    
+    private func savePhoto(){
+        
+        guard let originalImage = originalImage else {
+            return
+            
+        } //Warn user when there is no image
+        
+        let processedImage = filterImage(originalImage)
+        
+        //Save to photo library
+        PHPhotoLibrary.requestAuthorization { (status) in
+            guard status == .authorized else{
+                return //TODO Display to the user how to enable photos
+            }
+            
+            //Make a photo library change
+            PHPhotoLibrary.shared().performChanges({
+                
+                PHAssetCreationRequest.creationRequestForAsset(from: processedImage)
+                
+            }) { (success, error) in
+                if let error = error {
+                    print("Error saving photo \(error)")
+                    return
+                }
+                
+                //Display alert
+                print("Saved photo successfully")
+                
+            }
+            
+        }
+        
+        
+        
+    }
 
 	// MARK: Slider events
 	
