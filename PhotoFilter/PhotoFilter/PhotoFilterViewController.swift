@@ -11,6 +11,23 @@ class PhotoFilterViewController: UIViewController {
     
     private var originalImage: UIImage? {
         didSet{
+            
+            guard let originalImage = originalImage else {return}
+            
+            var scaledSize = imageView.bounds.size
+            
+         // 1x 2x 3x (400 points * 3x = 1,200pixels)
+            let scale = UIScreen.main.scale
+            
+            scaledSize = CGSize(width: scaledSize.width * scale, height: scaledSize.width * scale)
+            
+            scaledImage = originalImage.imageByScaling(toSize: scaledSize)
+            
+        }
+    }
+    
+    private var scaledImage: UIImage? {
+        didSet{
             updateView()
         }
     }
