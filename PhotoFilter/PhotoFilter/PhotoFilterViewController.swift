@@ -31,8 +31,24 @@ class PhotoFilterViewController: UIViewController {
 	@IBAction func choosePhotoButtonPressed(_ sender: Any) {
 		// TODO: show the photo picker so we can choose on-device photos
 		// UIImagePickerController + Delegate
+        presentImagePicker()
 	}
 	
+    private func presentImagePicker(){
+        
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            print("Error with image picker")
+            return
+        }
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self
+        
+        present(imagePicker, animated: true, completion: nil)
+        
+    }
+    
 	@IBAction func savePhotoButtonPressed(_ sender: UIButton) {
 
 		// TODO: Save to photo library
@@ -93,3 +109,22 @@ class PhotoFilterViewController: UIViewController {
     
 }
 
+extension PhotoFilterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        
+        //Set the image and update the display
+        
+        if let image = info[.originalImage] as? UIImage {
+            originalImage = image
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+}
